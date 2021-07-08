@@ -1,12 +1,12 @@
 import * as $ from "jquery";
-$("#add").on("click", () => console.log(123));
+import "./buttons/add";
+import { createDeleteButton } from "./buttons/delete";
+export const USERS_URL = "http://localhost:3033/users";
 
-const USERS_URL = "http://localhost:3033/users";
-
-async function showUsers() {
+export async function showUsers() {
   const users = await getUsers();
   const usersNames = users.map((user) =>
-    $(`<div>${user.name}</div>`).on("click", () => console.log(user.name))
+    $(`<div>${user.name}</div>`).addClass("className").append(createDeleteButton(user.id))
   );
   $("#users").append(usersNames);
   console.log(users);
