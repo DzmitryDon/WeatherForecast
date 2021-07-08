@@ -1,14 +1,18 @@
 import * as $ from "jquery";
 import "./buttons/add";
+import "./buttons/filter";
 import { createDeleteButton } from "./buttons/delete";
 export const USERS_URL = "http://localhost:3033/users";
+export let users;
 
-export async function showUsers() {
-  const users = await getUsers();
+export async function showUsers(users) {
+  //const users = await getUsers();
   const usersNames = users.map((user) =>
-    $(`<div>${user.name}</div>`).addClass("className").append(createDeleteButton(user.id))
+    $(`<div>${user.name}</div>`)
+      .addClass("className")
+      .append(createDeleteButton(user.id))
   );
-  $("#users").append(usersNames);
+  $("#users").clearQueue().append(usersNames);
   console.log(users);
 }
 
@@ -18,4 +22,12 @@ async function getUsers() {
   return users;
 }
 
-document.getElementById("show").onclick = () => showUsers();
+document.getElementById("show").onclick = async () => {
+  users = await getUsers();
+  showUsers(users);
+};
+
+/* function initUsers() {
+
+
+} */
