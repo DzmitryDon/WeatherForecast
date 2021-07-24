@@ -60,13 +60,16 @@ function showWeatherReport(weather) {
     if (weather.cod === 200) {
       deletetWeatherForHours();
 
+      const windescription = getWindescription(weather.wind.deg);
       const currWeatherText = `Температура: ${Math.round(
         weather.main.temp
       )} *C, \n Давление: ${weather.main.pressure}, \n Влажность: ${
         weather.main.humidity
-      }, \n Скорость ветра: ${weather.wind.speed} ,\n  Направление ветра: ${
-        weather.wind.deg
-      }, \n Погода: ${weather.weather[0].main} \n`;
+      }, \n Скорость ветра: ${
+        weather.wind.speed
+      } ,\n  Направление ветра: ${windescription}, \n Погода: ${
+        weather.weather[0].main
+      } \n`;
 
       const documentСurrWeatherText = document.getElementById(
         "current-weather-text"
@@ -104,13 +107,16 @@ function showWeatherReport(weather) {
         weatherListHours.forEach((elem) => {
           const time = elem.dt_txt.substr(11, 5);
 
+          const windescription = getWindescription(elem.wind.deg);
           const weatherForHours = `${city}, ${country}, ${time} Температура: ${Math.round(
             elem.main.temp
           )} *C, Давление: ${elem.main.pressure}, Влажность: ${
             elem.main.humidity
-          }, Скорость ветра: ${elem.wind.speed} , Направление ветра: ${
-            elem.wind.deg
-          }, Погода: ${elem.weather[0].main}`;
+          }, Скорость ветра: ${
+            elem.wind.speed
+          } , Направление ветра: ${windescription}, Погода: ${
+            elem.weather[0].main
+          }`;
 
           const divHours = document.createElement("div");
           divHours.className = `weather-hour-${i}`;
@@ -163,7 +169,9 @@ function showWeatherReport(weather) {
             const windspeeddoc = document.getElementById(`wind-speed-${i}`);
             windspeeddoc.innerText = element.wind.speed;
             const winddegdoc = document.getElementById(`wind-deg-${i}`);
-            winddegdoc.innerText = element.wind.deg;
+            const windescription = getWindescription(element.wind.deg);
+
+            winddegdoc.innerText = windescription;
 
             const weathergdoc = document.getElementById(`weather-${i}`);
             weathergdoc.innerText = element.weather[0].main;
@@ -221,4 +229,25 @@ function deletetWeatherForHours() {
       elemDelete.parentNode.removeChild(elemDelete);
     }
   }
+}
+
+function getWindescription(degree) {
+  const sectors = [
+    "Северный",
+    "Северо-восток",
+    "Восточно",
+    "Юго-восточный",
+    "Южный",
+    "Юго-Западный",
+    "Вестерли",
+    "Северо-Запад",
+  ];
+
+  degree += 22.5;
+
+  if (degree < 0) degree = 360 - (Math.abs(degree) % 360);
+  else degree = degree % 360;
+
+  const whichWind = parseInt(degree / 45);
+  return sectors[whichWind];
 }

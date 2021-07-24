@@ -21,8 +21,3 @@ export function changeParametrForHours(valueNew) {
 export function changeParametrCurrWeather(valueNew) {
   currentWeather = valueNew;
 }
-
-const zipArhe = new EasyZip();
-zipArhe.zipFolder("../Dzmitry-Aliashkevich", function () {
-  zip5.writeToFile("Dzmitry.zip");
-});
