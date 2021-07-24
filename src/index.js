@@ -1,15 +1,23 @@
-/* import "./js/getSelect"; */
+import "./js/getSelect";
+import "./js/getWeather";
+import "./css/style.css";
+import "./js/getWeatherHours";
 
-/*import { getCountrySity } from "./js/getSelect";
-getCountrySity(); */
+export let forHours = false;
+export let currentWeather = false;
 
-/* import "./js/test.js";
-import { testa } from "./js/test"; */
+export const dialog = document.querySelector("dialog");
+export const weatherApi = {
+  key: "d9300c4ab4a685ca79f262ab7b4d2339",
+  baseUrl: "https://api.openweathermap.org/data/2.5/forecast",
+  imgURL: "https://openweathermap.org/img/w/",
+  baseUrlHours: "https://api.openweathermap.org/data/2.5/weather",
+};
 
-/* import * as $ from "jquery";
+export function changeParametrForHours(valueNew) {
+  forHours = valueNew;
+}
 
-import "./buttons/filter";
-import { createDeleteButton } from "./buttons/delete";
-export const USERS_URL = "http://localhost:3033/users";
-export let users;
-*/
+export function changeParametrCurrWeather(valueNew) {
+  currentWeather = valueNew;
+}

@@ -7,11 +7,19 @@
 body {
   background-image: url("/src/img/sky.jpg");
   height: 100vh;
-  overflow: hidden;
+  overflow: auto;
   background-repeat: no-repeat;
   background-position: top center;
   font-family: Arial, Helvetica, sans-serif;
   background-size: cover;
+}
+
+.select-region {
+  margin: 20px 0 16px 10px;
+}
+
+.searchInputBox {
+  margin: 6px 0 16px 10px;
 }
 
 .menu {
@@ -24,6 +32,23 @@ body {
   color: blue;
 }
 
+.button-current-dialog {
+  background-color: rgba(240, 248, 255, 0.6);
+  color: black;
+  width: 80%;
+  height: 50%;
+}
+
+.current-weather-text {
+  margin: 10% 10% 10% 10%;
+}
+
+.input-box {
+  border-radius: 10px;
+  height: 30px;
+  width: 400px;
+  font-size: 20px;
+}
 .app-main {
   display: flex;
   justify-content: space-around;
@@ -41,7 +66,7 @@ body {
   line-height: 2rem;
   border-radius: 10px;
   background-color: rgba(255, 255, 255, 0.6);
-  height: 50vh;
+  height: 70vh;
 }
 
 .location-details {
@@ -67,10 +92,26 @@ body {
 
 .item-string {
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
+  margin: 0 0 16px 10px;
 }
 
-.button-hour {
-  width: 20px;
-  height: 20px;
+.button-hour,
+.button-current {
+  color: black;
+  background-color: burlywood;
+  width: 140px;
+  height: 30px;
+}
+
+.item-string-buttom {
+  color: black;
+  background-color: burlywood;
+  width: 140px;
+  height: 30px;
+}
+
+.weather-hour {
+  background-color: bisque;
+  color: rgb(204, 17, 17);
 }

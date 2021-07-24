@@ -1,5 +1,6 @@
 {
-    "Afghanistan": [
+  "cities": [ {
+  "Afghanistan": [
       "Herat",
       "Kabul",
       "Kandahar",
@@ -84142,5 +84143,7 @@
       "Mufakose",
       "Mutare",
       "Victoria Falls"
-    ]
+      ]
+    }
+  ]
   }

@@ -1,22 +1,55 @@
+import {
+  forHours,
+  changeParametrForHours,
+  currentWeather,
+  changeParametrCurrWeather,
+  dialog,
+} from "../index";
+import { keypressGetWeather } from "../js/getWeather";
+
 const btnHour = document.getElementById("button-hour");
 btnHour.onclick = getWeatherHours;
 
-const searchInputBox1 = document.getElementById("input-box");
+const searchInputBoxHour = document.getElementById("input-box");
+const txt = "Город -- Температура";
 
 function getWeatherHours() {
-  getWeatherReport(searchInputBox1.value);
+  if (searchInputBoxHour.value === "") {
+    alert("Введите город...");
+  } else {
+    changeParametrForHours(true);
+    changeParametrCurrWeather(false);
+
+    keypressGetWeather(searchInputBoxHour.value);
+  }
 }
 
-function getWeatherReport(city) {
-  fetch(
-    `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=d9300c4ab4a685ca79f262ab7b4d2339`
-  )
-    .then((weather) => {
-      return weather.json();
-    })
-    .then(showWeatherReport);
-}
+/*const btnCurr = document.getElementById("button-curr");
+btnCurr.onclick = getWeatherCurr;
 
-function showWeatherReport(weather) {
-  console.log(weather);
-}
+function getWeatherCurr() {
+  if (searchInputBoxHour.value === "") {
+    alert("Введите город...");
+  } else {
+    changeParametrForHours(false);
+    changeParametrCurrWeather(true);
+
+    keypressGetWeather(searchInputBoxHour.value);
+  }
+} */
+
+//const dialog = document.querySelector("dialog");
+document.querySelector("#show").onclick = function () {
+  if (searchInputBoxHour.value === "") {
+    alert("Введите город...");
+  } else {
+    changeParametrForHours(false);
+    changeParametrCurrWeather(true);
+    keypressGetWeather(searchInputBoxHour.value);
+
+    //dialog.show();
+  }
+};
+document.querySelector("#close").onclick = function () {
+  dialog.close();
+};

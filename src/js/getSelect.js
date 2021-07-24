@@ -1,8 +1,8 @@
 export function getCountrySity() {
-  fetch("./datas/sities.json")
+  fetch("//localhost:3033/cities")
     .then((res) => res.json())
     .then((json) => {
-      let jsObj = json;
+      let jsObj = json[0];
       for (let key in jsObj) {
         let countryOption = document.createElement("option");
         let countrySelect = document.getElementById("countrySelect");
@@ -28,7 +28,8 @@ export function getCountrySity() {
             citySelect.appendChild(cityOption);
           }
         });
-    });
+    })
+    .catch((err) => alert(`ВНИМАНИЕ ошибка чтения списка городов ${err} !`));
 }
 
 //////////////// main ///////

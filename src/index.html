@@ -20,8 +20,8 @@
     <title>Прогноз погоды</title>
   </head>
 
-  <body id="body">
-    <form action="">
+  <body id="body" class="body">
+    <form action="" class="select-region">
       <h4 class="menu">Выберете страну</h4>
       <select
         id="countrySelect"
@@ -34,16 +34,27 @@
       <select
         id="citySelect"
         name=""
-        onchange="runCity()"
         class="menu-select"
       ></select>
     </form>
 
     <div class="item-string" id="item-string">
-    <h2 class="menu">Или сделайте поиск по городу</h2>
-    <button class = "button-hour" id = "button-hour">Почасовой прогноз</button></p>
+        <div class="item-string-name"> <h2 class="menu">Или сделайте поиск по городу</h2></div>
+      <div class="item-string-buttom">
+
+        <button class = "button-hour" id = "button-hour">Почасовой прогноз</button></p>
+      </div>
+        
+     
+       <div class="item-string-numero">
+        <dialog class = "button-current-dialog">
+          <p id= "current-weather-text" class = "current-weather-text">Отсутствует состояние текущей погоды</p>
+          <button id="close" class = "button-current">Закрыть</button>
+        </dialog>
+        <button id="show" class = "button-current">Текущий прогноз</button>
+      </div> 
+
     </div>
-    <!-- <img class = "img-ambrella" src="src/img/ambrella.png" alt="Почасовой прогноз" > -->
     
     <div class="searchInputBox">
       <input
@@ -189,7 +200,6 @@
           <div id="img"><img id="img-3" /></div>
         </div>
       </div>
-      <!-- </div> -->
 
       <div class="weather-body">
         <div class="location-details">
@@ -234,12 +244,8 @@
           <div id="img"><img id="img-4" /></div>
         </div>
       </div>
-      <!-- </div> -->
     </div>
-
-    <!-- <script src="/src/getSelect.js" type="text/javascript"></script>
-    <script src="/src/getWeather.js" type="text/javascript"></script>
-    <script src="/src/getWeatherHours.js" type="text/javascript"></script> -->
+    
 
   </body>
 </html>

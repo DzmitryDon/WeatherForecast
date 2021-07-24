@@ -1,12 +1,16 @@
-// https://api.openweathermap.org/data/2.5/forecast?q=New%20York&appid=<your-api-key>&cnt=5
-//"https://api.openweathermap.org/data/2.5/weather"
-const weatherApi = {
-  key: "d9300c4ab4a685ca79f262ab7b4d2339",
-  baseUrl: "https://api.openweathermap.org/data/2.5/forecast",
-  imgURL: "https://openweathermap.org/img/w/",
-};
+import { weatherApi } from "../index";
+import {
+  forHours,
+  changeParametrForHours,
+  currentWeather,
+  changeParametrCurrWeather,
+  dialog,
+} from "../index";
 
 const searchInputBox = document.getElementById("input-box");
+
+const btnChangeCity = document.getElementById("citySelect");
+btnChangeCity.onchange = runCity;
 
 function runCity() {
   const city = document.getElementById("citySelect");
@@ -20,91 +24,164 @@ searchInputBox.addEventListener("keypress", (event) => {
     if (searchInputBox.value === "") {
       alert("Введите город...");
     } else {
+      changeParametrForHours(false);
+      changeParametrCurrWeather(false);
       keypressGetWeather(searchInputBox.value);
     }
   }
 });
 
-function keypressGetWeather(val) {
-  getWeatherReport(val);
+export function keypressGetWeather(val) {
+  if (currentWeather) {
+    getWeatherReport(val, weatherApi.baseUrlHours);
+  } else {
+    getWeatherReport(val, weatherApi.baseUrl);
+  }
   document.querySelector(".weather-body").style.display = "block";
 }
 
-function getWeatherReport(city) {
-  fetch(`${weatherApi.baseUrl}?q=${city}&appid=${weatherApi.key}&units=metric`)
+function getWeatherReport(city, webAdress) {
+  fetch(`${webAdress}?q=${city}&appid=${weatherApi.key}&units=metric`)
     .then((weather) => {
       return weather.json();
     })
-    .then(showWeatherReport);
+    .then(showWeatherReport)
+    .catch((err) =>
+      alert(`ВНИМАНИЕ возникла ошибка ${err}. ПОПРОБУЙТЕ поиск заново!`)
+    );
 }
 
 function showWeatherReport(weather) {
-  const weatherCityName = `${weather.city.name}, ${weather.city.country}`;
+  if (weather.cod === "404" || weather.cod === 404) {
+    alert(`ВНИМАНИЕ ответ сервера не получен. ПОПРОБУЙТЕ поиск заново!`);
+    return;
+  }
+  if (currentWeather) {
+    if (weather.cod === 200) {
+      deletetWeatherForHours();
 
-  const weatherList = weather.list.filter((reading) =>
-    reading.dt_txt.includes("12:00:00")
-  );
-  console.log(weatherList);
+      const currWeatherText = `Температура: ${Math.round(
+        weather.main.temp
+      )} *C, \n Давление: ${weather.main.pressure}, \n Влажность: ${
+        weather.main.humidity
+      }, \n Скорость ветра: ${weather.wind.speed} ,\n  Направление ветра: ${
+        weather.wind.deg
+      }, \n Погода: ${weather.weather[0].main} \n`;
 
-  const todayDate = new Date().getDate();
-  let i = 1;
-  weatherList.forEach((element) => {
-    const currDate = new Date(element.dt_txt);
-    const currDateDay = currDate.getDate();
+      const documentСurrWeatherText = document.getElementById(
+        "current-weather-text"
+      );
 
-    if ((currDateDay > todayDate) & (i < 5)) {
-      const citydoc = document.getElementById(`city-${i}`);
-      citydoc.innerText = weatherCityName;
+      documentСurrWeatherText.innerText = currWeatherText;
 
-      const temperaturedoc = document.getElementById(`temp-${i}`);
-      temperaturedoc.innerHTML = `${Math.round(element.main.temp)}&deg;C`;
+      const divCurrPicture = document.createElement("IMG");
+      divCurrPicture.className = "weather-curr-pict";
+      divCurrPicture.id = "weather-curr-pict";
 
-      const datedoc = document.getElementById(`date-${i}`);
-      datedoc.innerText = dateManage(currDate);
+      divCurrPicture.src = `${weatherApi.imgURL}${weather.weather[0].icon}.png`;
+      divCurrPicture.alt = weather.weather[0].main;
+      documentСurrWeatherText.appendChild(divCurrPicture);
 
-      const pressdoc = document.getElementById(`press-${i}`);
-      pressdoc.innerText = element.main.pressure;
-
-      const humiditydoc = document.getElementById(`humidity-${i}`);
-      humiditydoc.innerText = element.main.humidity;
-
-      const windspeeddoc = document.getElementById(`wind-speed-${i}`);
-      windspeeddoc.innerText = element.wind.speed;
-      const winddegdoc = document.getElementById(`wind-deg-${i}`);
-      winddegdoc.innerText = element.wind.deg;
-
-      const weathergdoc = document.getElementById(`weather-${i}`);
-      weathergdoc.innerText = element.weather[0].main;
-
-      const imggdoc = document.getElementById(`img-${i}`);
-      imggdoc.src = `${weatherApi.imgURL}${element.weather[0].icon}.png`;
-      imggdoc.alt = element.weather[0].main;
-
-      i++;
+      dialog.show();
     }
-  });
+  } else {
+    if (weather.cod === "200") {
+      if (forHours) {
+        const todayDate = new Date();
 
-  ////
+        const dateCurr = todayDate.getDate();
 
-  /////
+        const filterCurrDate = `${dateCurr}`;
+        const weatherListHours = weather.list.filter((reading) =>
+          reading.dt_txt.includes(filterCurrDate)
+        );
+        const city = weather.city.name;
+        const country = weather.city.country;
+        deletetWeatherForHours();
 
-  /* if (weatherType.textContent === "Clear") {
-    document.body.style.backgroundImage = "url('img/clear.jpg')";
-  } else if (weatherType.textContent === "Clouds") {
-    document.body.style.backgroundImage = "url('img/cloud.jpg')";
-  } else if (weatherType.textContent === "Haze") {
-    document.body.style.backgroundImage = "url('img/cloud.jpg')";
-  } else if (weatherType.textContent === "Rain") {
-    document.body.style.backgroundImage = "url('img/rain.jpg')";
-  } else if (weatherType.textContent === "Snow") {
-    document.body.style.backgroundImage = "url('img/snow.jpg')";
-  } else if (weatherType.textContent === "Thunderstorm") {
-    document.body.style.backgroundImage = "url('img/thunderstorm.jpg')";
-  } */
+        let i = 1;
+
+        weatherListHours.forEach((elem) => {
+          const time = elem.dt_txt.substr(11, 5);
+
+          const weatherForHours = `${city}, ${country}, ${time} Температура: ${Math.round(
+            elem.main.temp
+          )} *C, Давление: ${elem.main.pressure}, Влажность: ${
+            elem.main.humidity
+          }, Скорость ветра: ${elem.wind.speed} , Направление ветра: ${
+            elem.wind.deg
+          }, Погода: ${elem.weather[0].main}`;
+
+          const divHours = document.createElement("div");
+          divHours.className = `weather-hour-${i}`;
+          divHours.id = `weather-hour-${i}`;
+          divHours.style.background = "black";
+          divHours.style.backgroundColor = "bisque";
+          divHours.innerText = weatherForHours;
+          document.body.append(divHours);
+
+          const divHoursPic = document.getElementById(`weather-hour-${i}`);
+
+          const divHoursPicture = document.createElement("IMG");
+          divHoursPicture.className = `weather-hour-pict${i}`;
+          divHoursPicture.id = `weather-hour-pict${i}`;
+
+          divHoursPicture.src = `${weatherApi.imgURL}${elem.weather[0].icon}.png`;
+          divHoursPicture.alt = elem.weather[0].main;
+          divHoursPic.appendChild(divHoursPicture);
+
+          i++;
+        });
+      } else {
+        const weatherCityName = `${weather.city.name}, ${weather.city.country}`;
+        const weatherList = weather.list.filter((reading) =>
+          reading.dt_txt.includes("12:00:00")
+        );
+
+        const todayDate = new Date().getDate();
+        let i = 1;
+        weatherList.forEach((element) => {
+          const currDate = new Date(element.dt_txt);
+          const currDateDay = currDate.getDate();
+
+          if ((currDateDay > todayDate) & (i < 5)) {
+            const citydoc = document.getElementById(`city-${i}`);
+            citydoc.innerText = weatherCityName;
+
+            const temperaturedoc = document.getElementById(`temp-${i}`);
+            temperaturedoc.innerHTML = `${Math.round(element.main.temp)}&deg;C`;
+
+            const datedoc = document.getElementById(`date-${i}`);
+            datedoc.innerText = dateManage(currDate);
+
+            const pressdoc = document.getElementById(`press-${i}`);
+            pressdoc.innerText = element.main.pressure;
+
+            const humiditydoc = document.getElementById(`humidity-${i}`);
+            humiditydoc.innerText = element.main.humidity;
+
+            const windspeeddoc = document.getElementById(`wind-speed-${i}`);
+            windspeeddoc.innerText = element.wind.speed;
+            const winddegdoc = document.getElementById(`wind-deg-${i}`);
+            winddegdoc.innerText = element.wind.deg;
+
+            const weathergdoc = document.getElementById(`weather-${i}`);
+            weathergdoc.innerText = element.weather[0].main;
+
+            const imggdoc = document.getElementById(`img-${i}`);
+            imggdoc.src = `${weatherApi.imgURL}${element.weather[0].icon}.png`;
+            imggdoc.alt = element.weather[0].main;
+
+            i++;
+          }
+        });
+      }
+    }
+  }
 }
 
 function dateManage(dateArg) {
-  let days = [
+  const days = [
     "Sunday",
     "Monday",
     "Tuesday",
@@ -114,7 +191,7 @@ function dateManage(dateArg) {
     "Saturday",
   ];
 
-  let months = [
+  const months = [
     "January",
     "February",
     "March",
@@ -129,34 +206,19 @@ function dateManage(dateArg) {
     "December",
   ];
 
-  let year = dateArg.getFullYear();
-  let month = months[dateArg.getMonth()];
-  let date = dateArg.getDate();
-  let day = days[dateArg.getDay()];
+  const year = dateArg.getFullYear();
+  const month = months[dateArg.getMonth()];
+  const date = dateArg.getDate();
+  const day = days[dateArg.getDay()];
 
   return `${date} ${month} (${day}), ${year}`;
 }
 
-/* fetch(
-  "http://api.openweathermap.org/data/2.5/weather?id=ID_ВАШЕГО_ГОРОДА&lang=ru&appid=ВАШ_API_КЛЮЧ"
-)
-  .then(function (resp) {
-    return resp.json();
-  })
-  .then(function (data) {
-    //добавляем название города
-    document.querySelector(".weather__city").textContent = data.name;
-    //data.main.temp содержит значение в Кельвинах, отнимаем от  273, чтобы получить значение в градусах Цельсия
-    document.querySelector(".weather__forecast").innerHTML =
-      Math.round(data.main.temp - 273) + "&deg;";
-    //Добавляем описание погоды
-    document.querySelector(".weather__desc").textContent =
-      data.weather[0]["description"];
-    //Добавляем иконку погоды
-    document.querySelector(
-      ".weather__icon"
-    ).innerHTML = `<img src="https://openweathermap.org/img/wn/${data.weather[0]["icon"]}@2x.png">`;
-  })
-  .catch(function () {
-    //Обрабатываем ошибки
-  }); */
+function deletetWeatherForHours() {
+  for (let i = 0; i < 6; i++) {
+    const elemDelete = document.getElementById(`weather-hour-${i}`);
+    if (elemDelete !== null) {
+      elemDelete.parentNode.removeChild(elemDelete);
+    }
+  }
+}
